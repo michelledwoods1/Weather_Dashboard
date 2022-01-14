@@ -28,35 +28,36 @@
         <article class="row">
             <!-- //container with 2 columns
                 //column 1 - header, input area, search button, list of buttons -->
-            <div class="col-12 col-md-4 col-lg-3">
+            <div class="col-12 col-md-4 col-lg-3 card">
                 <!-- (h1>{Search City})+input[placeholder="City"]+(button.btn.btn-primary>{Search}) -->
                 <h1>Search for a City:</h1>
-                <input type="text" placeholder="city" class = "input">
-                <button id="searchButton" class="btn btn-primary">Search</button>
-                    
-
+                <input type="text" id = "input" class="text-center text-lowercase">
+                <div id="city-buttons" class="card-body col-12">
+                    <button id="searchButton" class="btn btn-primary col-12">Search</button>
+                </div>
+                  
             </div>
 
 
             <!-- //column 2 with 2 rows
 
                 //column 2 - row 2 - 5 columns with cards -->
-            <div class="col-12 col-md-8 col-lg-9">
+            <div class="col-12 col-md-8 col-lg-9" id="results">
                 <!-- article.row*2 -- (Ctrl space/Tab -->
                 <article class="row">
 
                     <!-- //column 2 - row 1 - header, 4 divs -->
                 <!-- (h1>{Sydney})+(article>{label: }+span#id)*4 -->
-                    <div class="col-12">
-                        <h1 id="#currentCity">Sydney</h1>
-                        <article>label: <span id="temp"></span></article>
-                        <article>label: <span id="wind"></span></article>
-                        <article>label: <span id="humidity"></span></article>
-                        <article>label: <span id="uv"></span></article>
+                    <div class="col-12 card">
+                        <h1 id="currentCity" class="card-header"></h1>
+                        <article>Temp: <span data-result="temp" id="temp" &#8451></span></article>
+                        <article>Wind: <span data-result="wind" id="wind"></span></article>
+                        <article>Humidity: <span data-result="humidity" id="humidity"></span></article>
+                        <article>UV Index: <span data-result="uv" id="uv"></span></article>
                     </div>
                 </article>
                 
-                <article class="row">
+                <article class="row" id="forecast">
                 <!-- //cards - 5 divs -->
                 
                 <div class="card col-12 col-sm-6 col-md-4 col-lg-2">

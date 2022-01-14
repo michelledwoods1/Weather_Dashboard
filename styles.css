@@ -1,0 +1,31 @@
+:root {
+  --primary: #24238d;
+  --secondary: #3c17e4;
+  --tertiary: #788585;
+  --light-dark: #6f6866;
+  --dark: #38302e;
+  --border-radius: 0.3rem;
+}
+
+* {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.min-100-vh {
+    min-height: 100vh;
+  }
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+#grad {
+    background-color: linear-gradient(to right, var(--primary), var(--secondary);
+}
+
+

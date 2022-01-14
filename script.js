@@ -1,61 +1,158 @@
+// userInput.setAttribute("style", "height: 1.5");
+//askBCS - why is height not working?
 
-//set default information
-var city = 'sydney';
+
+// searchButton.setAttribute("style", "padding: 0");
+//askBCS - why is padding 0 not working?
+
+//set variables
 var apiKey = '0efb3c8f25a5e0eb6c284292538858f4';
-
-//convert kelvin to celsisu -273.15
-var userInput = document.getElementById("input");
+today = moment().format("D" + "/" + "MM" + "/" + "YYYY");
+var cityInput = document.getElementById("input");
 var searchButton = document.getElementById("searchButton");
 var currentCity = document.getElementById("currentCity");
+var cityButtons = document.getElementById("city-buttons");
+var tempEl = document.getElementById("temp");
+var windEl = document.getElementById("wind");
+var humidityEl = document.getElementById("humidity");
+var uvEl = document.getElementById("uv");
+var results = document.getElementById("results");
 
-console.log("This Search Button text:  " + searchButton.textContent);
+//style variables
+cityInput.setAttribute("style", "border-radius: 0.25rem");
+tempEl.setAttribute("style", "&#8451");
+results.setAttribute("style", "display: none");
 
+
+//event listener to start new search function
 searchButton.addEventListener("click", function(event) {
     event.preventDefault();
-    
+    var city = cityInput.value.trim();
+    console.log(city);
 
-    // if (userInput === "") {
+    if (city) {
+        getCityCoord(city);
+
+    } else {
+        alert("Please enter a valid City")
+    }
+});
+
+
+// cityButtons.addEventListener("click", function(event) {
+//     city = event.target.getAttribute('data-city');
+      
+//     if (city) {
+//         getUserCity(citye);
+      
+//         }
+//     };
+
+console.log("This is today's date :" + today);
+
+
+
+
+
+    
+// need to match to names in api
+    // if (cityInput === "") {
     //     console.log("No input value");
     //     return;
+//askBCS - why is new button being created when no text is entered into input box
     // }
- 
-    var city = userInput.value;
-    console.log("This is chosen city before forced city :" + city);
-    var li = document.createElement("li")
-    searchButton.appendChild(li);
-    li.textContent = city;
-    console.log("This is li text content: " + li.textContent);
-    li.setAttribute("data-index", "cityName - " + city);
-    li.setAttribute("id","cityName -" + city);
-
-    
 
 
+// var keyLS = listButton.dataset.city;
+// console.log("This is local storage key :" + keyLS);
+// var valueLS = listButton.textContent;
+// console.log("This is LS value: " + valueLS);
+// localStorage.setItem(keyLS, valueLS);
+// city.value = "";
+
+// var buttonClickHandler = function(event) {
+//     var city = event.target.getAttribute('data-city');
+//     console.log("This is city from previous searhces: " + city);
+
+//     if (city) {
+//         getFeatureCity(city);
+
+//     }
+// }   
 
 
 
-});
-var city = 'sydney';
+
+
 // ('<i class="far fa-save"></i>');
 
 // get the lon & lat for the search item
 function oneCall(lon, lat){
     return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`)
-        .then((res) => res.json())
+        .then(function(response) {
+            return response.json();
+        })
+        // .then((res) => res.json())
         .then(function(res){
             console.log("THIS IS UV DATA: ");
             console.log(res);
-            var daily = res.daily
-            for (var i = 0; i < 5; i++) {
-                var previousDays = daily[i];
-                console.log(previousDays);
-                
-            }
-        })
 
+            results.setAttribute("style", "display: block");
+
+
+            queryString = res.timezone
+            var cityName = queryString.split("/")[1];
+
+            if (cityName) {
+            console.log("This is the city Name : " + cityName);
+            currentCity.textContent = cityName;
+
+            } else {
+                document.location.replace('./index.html');
+            }
+
+
+            var listButton = document.createElement("button")
+            cityButtons.appendChild(listButton);
+            listButton.textContent = cityName;
+            console.log("This is new button text content: " + listButton.textContent);
+            listButton.setAttribute("data-city", "cityName-" + cityInput);
+            listButton.setAttribute("id", "city");
+            listButton.setAttribute("class", "btn btn-primary col-12 my-3");
+
+            iconEl = (res.current.weather[3])        
+            console.log("Thi is the weather icon number : " + iconEl);
+
+            //convert kelvin to celsisu -273.15
+            tempEl = (res.current.temp-275.15).toFixed(2);
+            console.log("This is current temp : " + tempEl);
+
+
+            windEl = (res.current.wind_speed) + " MPH"
+            console.log("This is current wind : " + windEl);
+            
+            humidityEl = res.current.humidity;
+            console.log("This is current humidity : " + humidityEl + "%");
+
+            uvEl = res.current.uvi;
+            console.log("This is current uv : " + uvEl);
+
+            // fetch('http://openweathermap.org/img/wn/10d@2x.png
+
+
+
+            // var daily = res.daily
+            // for (var i = today; i < 5; i++) {
+            //     var previousDays = daily[i];
+            //     console.log(previousDays);
+            //     console.log("This is lon fron 2nd api: " + lon);
+                
+    })
 }
 
-fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`)
+var getCityCoord = function (city) {
+    
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`)
     .then(function(response){
         return response.json();
     })
@@ -63,37 +160,20 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}
             console.log("NO UV DATA:");
             console.log(data);
             // use math to round to 2 decimal place
+            
         
-        var tempLabel = document.getElementById("#temp");
-        var temp = (data.main.temp-275.15).toFixed(2);
-        console.log((data.main.temp-273.15).toFixed(2));
-        tempLabel = temp + "C";
-        console.log(tempLabel);
+        var lonEl = data.coord.lon;
+        console.log("This is lon from 1st api :" + lonEl);
+        var latEl = data.coord.lat;
+        console.log("This is lat from 1st api :" + lonEl);
+        currentCity.textContent = data.name
 
-        
-        var windLabel = document.getElementById("#wind");
-        var wind = data.wind.speed
-        console.log(data.wind.speed);
-        windLabel = wind + "MPH";
-        console.log(windLabel);
+        return oneCall(lonEl, latEl);
 
+    });
+};
 
-        var humdityLabel = document.getElementById("humidity");
-        var humidity = data.main.humidity;
-        console.log(data.main.humidity);
-        humdityLabel = humidity;
-        console.log(data.main.humidity + "%");
-
-
-
-        //var dailyUV = 
-
-
-        
-        // ....
-        
-        return oneCall(data.coord.lon, data.coord.lat)
-    })
+    // cityButtons.addEventListener('click', buttonClickHandler);
 
     // // recall local storage for each hour of the day
     // for (var i = dayStart; i <= dayEnd; i++) {
@@ -102,3 +182,5 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}
     //         console.log("This is TEST - local storage i recalled via for loop : " + localStorage.getItem(i))
     //         $("#text-" +i).val(localStorage.getItem(i));
     //     };
+
+    
