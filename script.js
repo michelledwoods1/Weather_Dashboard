@@ -1,53 +1,3 @@
-// userInput.setAttribute("style", "height: 1.5");
-//askBCS - why is height not working?
-
-
-// searchButton.setAttribute("style", "padding: 0");
-//askBCS - why is padding 0 not working?
-
-//set variables
-var apiKey = '0efb3c8f25a5e0eb6c284292538858f4';
-var cityInput = document.getElementById("input");
-var searchButton = document.getElementById("searchButton");
-var currentCity = document.getElementById("currentCity");
-var cityButtons = document.getElementById("city-buttons");
-var tempEl = document.getElementById("temp");
-var windEl = document.getElementById("wind");
-var humidityEl = document.getElementById("humidity");
-var uvEl = document.getElementById("uv");
-var results = document.getElementById("results");
-var imgEl = document.getElementById("img");
-var dateEl = document.getElementById("date");
-var forecast = document.getElementById("forecast");
-var cardTitle = document.querySelector(".card-title");
-
-//style variables
-cityInput.setAttribute("style", "border-radius: 0.25rem");
-tempEl.setAttribute("style", "&#8451");
-results.setAttribute("style", "display: none");
-forecastContainer = document.createElement("div");
-forecast.append(forecastContainer);
-forecastContainer.setAttribute("class", "row card ");
-
-// forecastContainer.setAttribute("class", "card col-12 col-sm-6 col-md-4 col-lg-2");
-
-//event listener to start new search function
-searchButton.addEventListener("click", function(event) {
-    event.preventDefault();
-    var city = cityInput.value.trim();
-    console.log(city);
-
-    if (city) {
-        getCityCoord(city);
-
-    } else {
-        alert("Please enter a valid City")
-    }
-});
-
-
-
-    
 // need to match to names in api
     // if (cityInput === "") {
     //     console.log("No input value");
@@ -55,13 +5,6 @@ searchButton.addEventListener("click", function(event) {
 //askBCS - why is new button being created when no text is entered into input box
     // }
 
-
-// var keyLS = listButton.dataset.city;
-// console.log("This is local storage key :" + keyLS);
-// var valueLS = listButton.textContent;
-// console.log("This is LS value: " + valueLS);
-// localStorage.setItem(keyLS, valueLS);
-// city.value = "";
 
 // var buttonClickHandler = function(event) {
 //     var city = event.target.getAttribute('data-city');
@@ -77,113 +20,191 @@ searchButton.addEventListener("click", function(event) {
 
 
 
-// ('<i class="far fa-save"></i>');
+//set variables
 
-// get the lon & lat for the search item
+var apiKey = '0efb3c8f25a5e0eb6c284292538858f4';
+var cityInput = document.getElementById("input");
+var searchButton = document.getElementById("searchButton");
+var cityButtons = document.getElementById("city-buttons");
+var results = document.getElementById("results");
+var current = document.getElementById("current");
+var forecast = document.getElementById("forecast");
+
+
+//style variables
+cityInput.setAttribute("style", "border-radius: 0.25rem");
+
+// hide results area (right hand side)
+results.setAttribute("style", "display: none");
+
+
+//event listener to start new search function
+searchButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    var city = cityInput.value.trim();
+    console.log(city);
+
+    if (city) {
+        getCityCoord(city);
+
+    } else {
+        alert("Please enter a valid City")
+    }
+    cityInput.value = "";
+});
+
+// call city lon & lat
 function oneCall(lon, lat){
     return fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${apiKey}`)
         .then(function(response) {
             return response.json();
         })
-        // .then((res) => res.json())
-        .then(function(res){
-            console.log("THIS IS UV DATA: ");
+        .then(function(res) {
+            // console.log("THIS IS UV DATA: ");
             console.log(res);
+                      
+            //clear input 
+            cityInput = "";
+            // create card container
 
-            results.setAttribute("style", "display: block");
+            todayContainer = document.createElement("div");
+            todayContainer.setAttribute("id", "todayContainer");
+            current.append(todayContainer);
+            todayContainer.setAttribute("class", "row col-12 d-flex align-items-start");
 
-
+            
+            // city name from api
+            currentCity = document.createElement("h1");
+            todayContainer.append(currentCity);
+            currentCity.setAttribute("class", "row")
             queryString = res.timezone
             var cityName = queryString.split("/")[1];
-            console.log("This is the city Name : " + cityName);
-            currentCity.textContent = cityName;
-            
-            iconEl = (res.current.weather[0].icon)
-            console.log("This is the weather icon number : " + iconEl);
-
-            imgURL = `http://openweathermap.org/img/wn/${iconEl}.png`
-            img.setAttribute("src", imgURL)
-            console.log("This is the icon image " + imgURL);
-
-
+            // console.log("This is the city Name : " + cityName);
+            currentCity.textContent = cityName
             
 
-
+            
             var listButton = document.createElement("button")
             cityButtons.appendChild(listButton);
             listButton.textContent = cityName;
             console.log("This is new button text content: " + listButton.textContent);
-            listButton.setAttribute("data-city", "cityName-" + cityInput);
+            listButton.setAttribute("data-city", "cityName-" + cityName);
             listButton.setAttribute("id", "city");
-            listButton.setAttribute("class", "btn btn-primary col-12 my-3");
+            listButton.setAttribute("class", "btn btn-primary col-12");
+
+            var keyLS = listButton.dataset.city;
+            console.log("This is local storage key :" + keyLS);
+            var valueLS = listButton.textContent;
+            console.log("This is LS value: " + valueLS);
+            localStorage.setItem(keyLS, valueLS);
+            
+
+            //show the results area (right hand side)
+            results.setAttribute("style", "display: block");
+            
+
+            // var todayBody = document.createElement("div");
+            // todayBody.setAttribute("class", "card-body col-12 col-sm-6 col-md-4 col-lg-2 mx-2")
+            // todayBody.setAttribute("id", "card");
+            // currentContainer.append(todayBody);
+
+
+            // get date from api
+            todayTitle = document.createElement("h4");
+            todayContainer.append(todayTitle);
+            todayDate = (res.daily[0].dt);
+            todayTitle.innerHTML = moment.unix(todayDate).format("D" + "/" + "MM" + "/" + "YYYY");
+            
+            // get icon from api
+            todayImg = document.createElement("img");
+            todayContainer.append(todayImg);
+            todayIcon = res.current.weather[0].icon
+            todayURL = `http://openweathermap.org/img/wn/${todayIcon}.png`
+            todayImg.setAttribute("src", todayURL);
+            todayImg.setAttribute("alt", "current weather icon");
 
             
-            Unix = res.daily[0].dt
-            console.log("This is date in Unix :" + Unix);
-            dateEl = moment.unix(Unix).format("D" + "/" + "MM" + "/" + "YYYY");
-            console.log("This is converted Unix " + dateEl);
+            // create card data
+
+            todayCard = document.createElement("div");
+            current.append(todayCard);
+            todayCard.setAttribute("id", "today-card-body")
+
+            todayTemp = document.createElement("div");
+            todayCard.append(todayTemp);
+            var todayCelcius = Math.round(parseFloat(res.current.temp)-273.15);
+            todayTemp.innerHTML = "Temp : " + todayCelcius + '&deg;' + "C";
+
+            todayWind = document.createElement("div");
+            todayCard.append(todayWind);
+            todayWind.innerHTML = "Wind : " + (res.current.wind_speed) + " MPH"
 
             
-            //convert kelvin to celsisu -273.15
-            tempEl.innerHTML = (res.current.temp-275.15).toFixed(2);
-            console.log("This is current temp : " + tempEl);
+            todayHumidity = document.createElement("div");
+            todayCard.append(todayHumidity);
+            todayHumidity.innerHTML = "Humidity : " + res.current.humidity;
 
 
-            windEl.innerHTML = (res.current.wind_speed) + " MPH"
-            console.log("This is current wind : " + windEl);
+            todayUV = document.createElement("div");
+            todayCard.append(todayUV);
+            todayUV.innerHTML = "UV index : " + res.current.uvi;
+
             
-            humidityEl.innerHTML = res.current.humidity;
-            console.log("This is current humidity : " + humidityEl + "%");
+            forecastContainer = document.createElement("div");
+            forecast.append(forecastContainer);
+            forecastContainer.setAttribute("id", "forecast-container");
+            forecastContainer.setAttribute("class", "row");
 
-            uvEl.innerHTML = res.current.uvi;
-            console.log("This is current uv : " + uvEl);
+
+
 
                         
             for (var i = 1; i < 6; i++) {
-                var cardBody = document.createElement("div");
-                cardBody.setAttribute("class", "card-body ")
-                cardBody.setAttribute("id", "card");
-                forecastContainer.append(cardBody);
+               
+                var forecastBody = document.createElement("div");
+                forecastBody.setAttribute("id", "forecast-card-body")
+                forecastBody.setAttribute("class", " row card-body")
+                // forecastBody.setAttribute("id", "card");
+                forecastContainer.append(forecastBody);
 
-                
+                // cardText = document.createElement("div");
+                // cardText.setAttribute("class", "card-text");
 
-
-
-                cardText = document.createElement("div");
-                cardText.setAttribute("class", "card-text");
-
-                cardUnix = res.daily[i].dt
+                forecastDate = res.daily[i].dt
                 // console.log("This is date in Unix :" + cardUnix);
-                cardTitle = document.createElement("h4");
-                cardTitle.innerHTML = moment.unix(cardUnix).format("D" + "/" + "MM" + "/" + "YYYY");
+                forecastTitle = document.createElement("h4");
+                forecastBody.append(forecastTitle);
+                forecastTitle.innerHTML = moment.unix(forecastDate).format("D" + "/" + "MM" + "/" + "YYYY");
                 // console.log("This is converted Unix " + date);
 
-                cardImgEl = document.createElement("img");
-                cardImgEl.setAttribute("id", "cardImg");
+               
+                // console.log(cardIconEl);
 
-                cardTempEl = document.createElement("div");
-                cardWindEl = document.createElement("div");
-                cardHumidityEl = document.createElement("div");
-                cardBody.append(cardTitle, cardImgEl, cardTempEl, cardWindEl, cardHumidityEl);
+                // create variables
 
-                cardIconEl = (res.daily[0].weather[0].icon);
-                // console.log("This is the weather icon number : " + cardIconEl);
-    
-                cardImgURL = `http://openweathermap.org/img/wn/${cardIconEl}.png`
-                cardImgEl.setAttribute("src", cardImgURL);
-                cardImgEl.setAttribute("alt", "forecasted weather icon");
-                // console.log("This is the CARD icon image " + cardImgURL);
-  
-                cardTempEl.innerHTML = "Temp : " + (res.daily[i].temp-275.15).toFixed(2);
-                // console.log("This is current CARDtemp : " + cardTempEl);
-            
-                cardWindEl.innerHTML = "Wind : " + (res.daily[i].wind_speed) + " MPH"
+                forecastDiv = document.createElement("div");
+                var forecastIcon = (res.daily[i].weather[0].icon);
+                forecastImg = document.createElement("img");
+                forecastDiv.append(forecastImg);
+                forecastURL = `http://openweathermap.org/img/wn/${forecastIcon}.png`
+                forecastImg.setAttribute("src", forecastURL);
+                forecastImg.setAttribute("alt", "forecasted weather icon");
+                
+                forecastTemp = document.createElement("div");
+                forecastWind = document.createElement("div");
+                forecastHumidity = document.createElement("div");
+
+                forecastContainer.append(forecastImg, forecastTemp, forecastWind, forecastHumidity);
+
+                // variable data
+                var forecastCelcius = Math.round(parseFloat(res.daily[i].temp.day)-273.15);
+                forecastTemp.innerHTML = "Temp : " + forecastCelcius + '&deg;' + "C";
+
+                forecastWind.innerHTML = "Wind : " + (res.daily[i].wind_speed) + " MPH"
                 // console.log("This is CARD wind : " + cardwindEl);
                 
-                cardHumidityEl.innerHTML = (res.daily[i].humidity)
+                forecastHumidity.innerHTML = "Humidity : " + (res.daily[i].humidity) + " %"
                 // console.log("This is CARD humidity : " + cardhumidityEl + "%");
-
-
 
             }
     })
@@ -205,12 +226,25 @@ var getCityCoord = function (city) {
         console.log("This is lon from 1st api :" + lonEl);
         var latEl = data.coord.lat;
         console.log("This is lat from 1st api :" + lonEl);
-        currentCity.textContent = data.name
+        // currentCity.textContent = data.name
 
         return oneCall(lonEl, latEl);
 
     });
 };
+
+                // cardTempEl.innerHTML = "Temp : " + (res.daily[i].temp-275.15).toFixed(2);
+                // console.log("This is current CARDtemp : " + cardTempEl);
+            
+
+
+                // cardIconEl = (res.daily[0].weather[0].icon);
+                // console.log("This is the weather icon number : " + cardIconEl);
+    
+                // cardImgURL = `http://openweathermap.org/img/wn/${cardIconEl}.png`
+                // console.log("This is the CARD icon image " + cardImgURL);
+  
+                //convert kelvin to celsisu -273.15
 
     // cityButtons.addEventListener('click', buttonClickHandler);
 
@@ -222,4 +256,42 @@ var getCityCoord = function (city) {
     //         $("#text-" +i).val(localStorage.getItem(i));
     //     };
 
-    
+     // var cardIconEl = res.daily[i].weather[0].icon;
+                //     if (res.daily[i].weather[0].icon.indexOf('01d')) {
+                //         cardIconEl = "01d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('01n')) {
+                //         cardIconEl = "01n"
+                //     } else if (res.daily[i].weather[0].icon.indexOf("O2d")) {
+                //         cardIconEl = "02d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("O2n")) {
+                //         cardIconEl = "02n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('03d')) {
+                //         cardIconEl = "03d";
+                //         console.log("This is test for 20Jan22 : " + cardIconEl);
+                //     } else if (res.daily[i].weather[0].icon.indexOf("03n")) {
+                //         cardIconEl = "03n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('04d')) {
+                //         cardIconEl = "04d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("04n")) {
+                //         cardIconEl = "04n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('09d')) {
+                //         cardIconEl = "09d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("09n")) {
+                //         cardIconEl = "09n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('10d')) {
+                //         cardIconEl = "10d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("10n")) {
+                //         cardIconEl = "10n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('11d')) {
+                //         cardIconEl = "11d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("11n")) {
+                //         cardIconEl = "11n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('13d')) {
+                //         cardIconEl = "13d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("13n")) {
+                //         cardIconEl = "13n";
+                //     } else if (res.daily[i].weather[0].icon.indexOf('50d')) {
+                //         cardIconEl = "50d";
+                //     } else if (res.daily[i].weather[0].icon.indexOf("50n")) {
+                //         cardIconEl = "50n";
+                // };
