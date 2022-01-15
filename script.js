@@ -7,7 +7,6 @@
 
 //set variables
 var apiKey = '0efb3c8f25a5e0eb6c284292538858f4';
-today = moment().format("D" + "/" + "MM" + "/" + "YYYY");
 var cityInput = document.getElementById("input");
 var searchButton = document.getElementById("searchButton");
 var currentCity = document.getElementById("currentCity");
@@ -17,12 +16,20 @@ var windEl = document.getElementById("wind");
 var humidityEl = document.getElementById("humidity");
 var uvEl = document.getElementById("uv");
 var results = document.getElementById("results");
+var imgEl = document.getElementById("img");
+var dateEl = document.getElementById("date");
+var forecast = document.getElementById("forecast");
+var cardTitle = document.querySelector(".card-title");
 
 //style variables
 cityInput.setAttribute("style", "border-radius: 0.25rem");
 tempEl.setAttribute("style", "&#8451");
 results.setAttribute("style", "display: none");
+forecastContainer = document.createElement("div");
+forecast.append(forecastContainer);
+forecastContainer.setAttribute("class", "row card ");
 
+// forecastContainer.setAttribute("class", "card col-12 col-sm-6 col-md-4 col-lg-2");
 
 //event listener to start new search function
 searchButton.addEventListener("click", function(event) {
@@ -37,20 +44,6 @@ searchButton.addEventListener("click", function(event) {
         alert("Please enter a valid City")
     }
 });
-
-
-// cityButtons.addEventListener("click", function(event) {
-//     city = event.target.getAttribute('data-city');
-      
-//     if (city) {
-//         getUserCity(citye);
-      
-//         }
-//     };
-
-console.log("This is today's date :" + today);
-
-
 
 
 
@@ -102,14 +95,18 @@ function oneCall(lon, lat){
 
             queryString = res.timezone
             var cityName = queryString.split("/")[1];
-
-            if (cityName) {
             console.log("This is the city Name : " + cityName);
             currentCity.textContent = cityName;
+            
+            iconEl = (res.current.weather[0].icon)
+            console.log("This is the weather icon number : " + iconEl);
 
-            } else {
-                document.location.replace('./index.html');
-            }
+            imgURL = `http://openweathermap.org/img/wn/${iconEl}.png`
+            img.setAttribute("src", imgURL)
+            console.log("This is the icon image " + imgURL);
+
+
+            
 
 
             var listButton = document.createElement("button")
@@ -120,33 +117,75 @@ function oneCall(lon, lat){
             listButton.setAttribute("id", "city");
             listButton.setAttribute("class", "btn btn-primary col-12 my-3");
 
-            iconEl = (res.current.weather[3])        
-            console.log("Thi is the weather icon number : " + iconEl);
+            
+            Unix = res.daily[0].dt
+            console.log("This is date in Unix :" + Unix);
+            dateEl = moment.unix(Unix).format("D" + "/" + "MM" + "/" + "YYYY");
+            console.log("This is converted Unix " + dateEl);
 
+            
             //convert kelvin to celsisu -273.15
-            tempEl = (res.current.temp-275.15).toFixed(2);
+            tempEl.innerHTML = (res.current.temp-275.15).toFixed(2);
             console.log("This is current temp : " + tempEl);
 
 
-            windEl = (res.current.wind_speed) + " MPH"
+            windEl.innerHTML = (res.current.wind_speed) + " MPH"
             console.log("This is current wind : " + windEl);
             
-            humidityEl = res.current.humidity;
+            humidityEl.innerHTML = res.current.humidity;
             console.log("This is current humidity : " + humidityEl + "%");
 
-            uvEl = res.current.uvi;
+            uvEl.innerHTML = res.current.uvi;
             console.log("This is current uv : " + uvEl);
 
-            // fetch('http://openweathermap.org/img/wn/10d@2x.png
+                        
+            for (var i = 1; i < 6; i++) {
+                var cardBody = document.createElement("div");
+                cardBody.setAttribute("class", "card-body ")
+                cardBody.setAttribute("id", "card");
+                forecastContainer.append(cardBody);
 
-
-
-            // var daily = res.daily
-            // for (var i = today; i < 5; i++) {
-            //     var previousDays = daily[i];
-            //     console.log(previousDays);
-            //     console.log("This is lon fron 2nd api: " + lon);
                 
+
+
+
+                cardText = document.createElement("div");
+                cardText.setAttribute("class", "card-text");
+
+                cardUnix = res.daily[i].dt
+                // console.log("This is date in Unix :" + cardUnix);
+                cardTitle = document.createElement("h4");
+                cardTitle.innerHTML = moment.unix(cardUnix).format("D" + "/" + "MM" + "/" + "YYYY");
+                // console.log("This is converted Unix " + date);
+
+                cardImgEl = document.createElement("img");
+                cardImgEl.setAttribute("id", "cardImg");
+
+                cardTempEl = document.createElement("div");
+                cardWindEl = document.createElement("div");
+                cardHumidityEl = document.createElement("div");
+                cardBody.append(cardTitle, cardImgEl, cardTempEl, cardWindEl, cardHumidityEl);
+
+                cardIconEl = (res.daily[0].weather[0].icon);
+                // console.log("This is the weather icon number : " + cardIconEl);
+    
+                cardImgURL = `http://openweathermap.org/img/wn/${cardIconEl}.png`
+                cardImgEl.setAttribute("src", cardImgURL);
+                cardImgEl.setAttribute("alt", "forecasted weather icon");
+                // console.log("This is the CARD icon image " + cardImgURL);
+  
+                cardTempEl.innerHTML = "Temp : " + (res.daily[i].temp-275.15).toFixed(2);
+                // console.log("This is current CARDtemp : " + cardTempEl);
+            
+                cardWindEl.innerHTML = "Wind : " + (res.daily[i].wind_speed) + " MPH"
+                // console.log("This is CARD wind : " + cardwindEl);
+                
+                cardHumidityEl.innerHTML = (res.daily[i].humidity)
+                // console.log("This is CARD humidity : " + cardhumidityEl + "%");
+
+
+
+            }
     })
 }
 

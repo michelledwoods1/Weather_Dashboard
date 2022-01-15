@@ -48,9 +48,13 @@
 
                     <!-- //column 2 - row 1 - header, 4 divs -->
                 <!-- (h1>{Sydney})+(article>{label: }+span#id)*4 -->
-                    <div class="col-12 card">
-                        <h1 id="currentCity" class="card-header"></h1>
-                        <article>Temp: <span data-result="temp" id="temp" &#8451></span></article>
+                    <div class="col-12 card" id="currentDay">
+                        <div class ="row">
+                            <h1 id="currentCity" class="card-header"></h1>
+                            <div id="date"></div>
+                            <img src="" alt="weather icon" id="img">
+                        </div>
+                        <article>Temp: <span data-result="temp" id="temp"></span></article>
                         <article>Wind: <span data-result="wind" id="wind"></span></article>
                         <article>Humidity: <span data-result="humidity" id="humidity"></span></article>
                         <article>UV Index: <span data-result="uv" id="uv"></span></article>
@@ -59,16 +63,16 @@
                 
                 <article class="row" id="forecast">
                 <!-- //cards - 5 divs -->
-                
-                <div class="card col-12 col-sm-6 col-md-4 col-lg-2">
-                    <div class="card-body">
-                      <h4 class="card-title">Card title</h4>
+<!--                 
+                <div class="card col-12 col-sm-6 col-md-4 col-lg-2"> -->
+                    <!-- <div class="card-body" id="forecast-container">
+                      <h4 class="card-title">5-Day Forecast</h4>
                       <p class="card-text">
                         Some quick example text to build on the card title
                         and make up the bulk of the card's content.
-                      </p>
-                    </div>
-                  </div>
+                      </p> -->
+                    <!-- </div>
+                  </div> -->
 
 
 
