@@ -13,7 +13,7 @@ var todayIconDisplay = document.getElementById("todayIcon");
 var forecastTitle = document.getElementById("forecastTitle")
 var todayCard = document.getElementById("todayCard")
 
-var usercity = cityInput.value;
+// var usercity = cityInput.value;
 var cities = [];
 
 
@@ -22,6 +22,7 @@ var storedCities = JSON.parse(localStorage.getItem("cities"));
 if (storedCities !== null) {
     cities = storedCities;
 }
+
 cityButtons.textContent = "";
 
 for (var i = 0; i < cities.length; i++) {
@@ -130,7 +131,13 @@ function getCityCoord (usercity, shouldCreateButton) {
         .then(function (response) {
             console.log("This is response status :" + response.status);
             if (!response.ok) {
-                alert("Invalid City")
+                alert("invalid city name");
+                todayCard.textContent = "";
+                forecastResult.textContent = "";
+                currentData.textContent = "";
+                forecastResult.textContent = "";
+                forecastTitle.textContent = "";
+                return;
             }
             return response.json();
         })
@@ -152,11 +159,7 @@ function getCityCoord (usercity, shouldCreateButton) {
             console.log("Coordinates from OpenWeatherMap : ");
             console.log("City :" + city + " " + "lat: " + lat + " " + "lon: " + lon);
 
-
-
- 
-            
-            // create buttons
+            // create buttons only if a new city
             if (shouldCreateButton) {
             var listButton = document.createElement("button")
             cityButtons.append(listButton);
@@ -175,7 +178,7 @@ function getCityCoord (usercity, shouldCreateButton) {
 
 
 
-//event listener to start new search function
+//event listeners
 searchButton.addEventListener("click", function(event) {
     event.preventDefault();
 
@@ -202,43 +205,10 @@ cityButtons.addEventListener("click", function(event) {
     console.log("This is a saved usercity :" + usercity);
     }
 
+
     if (usercity) {
         getCityCoord(usercity, false);
 
     }
 
 });
-
-
-
-
-// hide results area (right hand side)
-// results.setAttribute("style", "display: none");
-
-// $("#results").empty();
-//show the results area (right hand side)
-// results.setAttribute("style", "display: block");
-
-
-// var savedCities = JSON.parse(localStorage.getItem("cities")) || [];
- 
-// cities = savedCities 
-// console.log("this is saved cities :" + cities);
-
-
-
-
-
-
-// resultsContainerEl.setAttribute("style", "display: none");
-
-// cityInput.value = " ";
-
-// document.location.replace('./indexhtml');
-
-// $("#results").empty();
-
-// document.location.replace('./indexhtml');
-  
-
-
