@@ -17,6 +17,20 @@ var usercity = cityInput.value;
 var cities = [];
 
 
+// render local storage
+var storedCities = JSON.parse(localStorage.getItem("cities"));
+if (storedCities !== null) {
+    cities = storedCities;
+}
+cityButtons.textContent = "";
+
+for (var i = 0; i < cities.length; i++) {
+        var listButton = document.createElement("button");
+        listButton.textContent = cities[i];
+        cityButtons.append(listButton);
+        listButton.setAttribute("class", "btn btn-primary col-12");
+};
+
 // return city data based on lon & lat
 function oneCall(lat, lon){
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}`)
@@ -108,7 +122,9 @@ function oneCall(lat, lon){
     })
 };
 
-function getCityCoord (usercity) {
+function getCityCoord (usercity, shouldCreateButton) {
+    todayCard.textContent = "";
+    forecastResult.textContent = "";
           
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${usercity}&appid=${apiKey}`)
         .then(function (response) {
@@ -136,19 +152,24 @@ function getCityCoord (usercity) {
             console.log("Coordinates from OpenWeatherMap : ");
             console.log("City :" + city + " " + "lat: " + lat + " " + "lon: " + lon);
 
-            cities.push(city);
-            localStorage.setItem("cities", JSON.stringify(cities));
-            console.log("This is LOCAL STORAGE ARRAY : " + cities);
+
+
+ 
             
             // create buttons
+            if (shouldCreateButton) {
             var listButton = document.createElement("button")
             cityButtons.append(listButton);
             listButton.textContent = city;
             console.log("New Button name : " + city);
             listButton.setAttribute("class", "btn btn-primary col-12");
+            cities.push(city);
+            localStorage.setItem("cities", JSON.stringify(cities));
+            }
 
+            console.log("This is LOCAL STORAGE ARRAY : " + cities);
 
-        oneCall(lat, lon,);
+            oneCall(lat, lon,);
     });
 };
 
@@ -166,7 +187,7 @@ searchButton.addEventListener("click", function(event) {
     }
 
     if (usercity) {
-        getCityCoord(usercity);
+        getCityCoord(usercity, true);
 
       
     }
@@ -182,24 +203,13 @@ cityButtons.addEventListener("click", function(event) {
     }
 
     if (usercity) {
-        getCityCoord(usercity);
+        getCityCoord(usercity, false);
 
     }
 
 });
 
 
-// render local storage
-// var storedCities = JSON.parse(localStorage.getItem("cities"));
-// if (storedCities !== null) {
-//     cities = storedCities;
-// }
-// for (var i = 0; i < cities.length; i++) {
-//         var listButton = document.createElement("button");
-//         listButton.textContent = [i.textContent];
-//         cityButtons.append(listButton);
-//         listButton.setAttribute("class", "btn btn-primary col-12");
-// };
 
 
 // hide results area (right hand side)
