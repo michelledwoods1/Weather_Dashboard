@@ -33,7 +33,7 @@ for (var i = 0; i < cities.length; i++) {
 };
 
 // return city data based on lon & lat
-function oneCall(lat, lon){
+function oneCall(lat, lon, city){
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}`)
         .then(function(response) {
             return response.json();
@@ -41,6 +41,8 @@ function oneCall(lat, lon){
         .then(function(res) {
             console.log("OneCall api :");
             console.log(res);
+
+            cityTitle.textContent = city;
 
             // display current date
             todayDate.textContent = moment.unix(res.daily[0].dt).format("D" + "/" + "MM" + "/" + "YYYY");
@@ -54,30 +56,37 @@ function oneCall(lat, lon){
 
             // display current data
             var todayTemp = document.createElement("div");
+            todayTemp.setAttribute("class", "my-2 ml-2")
             todayCard.append(todayTemp);
             var todayCelcius = Math.round(parseFloat(res.current.temp)-273.15);
             todayTemp.innerHTML = "Temp : " + todayCelcius + '&deg;' + "C";
 
             var todayWind = document.createElement("div");
+            todayWind.setAttribute("class", "my-2 ml-2")
             todayCard.append(todayWind);
             todayWind.innerHTML = "Wind : " + (res.current.wind_speed) + " MPH"
            
             var todayHumidity = document.createElement("div");
             todayCard.append(todayHumidity);
+            todayHumidity.setAttribute("class", "my-2 ml-2")
             todayHumidity.innerHTML = "Humidity : " + res.current.humidity;
 
             var todayUV = document.createElement("div");
-            todayUV.setAttribute("style", "padding: 3");
+            todayUV.innerHTML = "UV : "
             todayCard.append(todayUV);
+            var todayUVbutton = document.createElement("button");
+            todayUV.setAttribute("class", "my-2 ml-2")
+            todayUV.appendChild(todayUVbutton);
+
             var todayUVindex = parseFloat(res.current.uvi);
             console.log("this is uv index : " + todayUVindex);
-            todayUV.innerHTML = "UV index : " + todayUVindex;
+            todayUVbutton.innerHTML = todayUVindex;
             if (todayUVindex >5) {
-                todayUV.setAttribute("style", "color: red");
+                todayUVbutton.setAttribute("class", "uvhigh");
             } else if (todayUVindex <3) {
-                todayUV.setAttribute("style", "color: green");
+                todayUVbutton.setAttribute("class", "uvlow");
             } else {
-               todayUV.setAttribute("style","color: orange");
+                todayUVbutton.setAttribute("class", "uvmoderate");
             };
 
             // display 5 day forecast heading
@@ -87,12 +96,13 @@ function oneCall(lat, lon){
             for (var i = 1; i < 6; i++) {
 
                 var forecastCard = document.createElement("div");
-                forecastCard.setAttribute("class", "card-body");
+                forecastCard.setAttribute("class", "card-body bg-secondary mx-1 my-1 text-white");
                 forecastResult.append(forecastCard);
+
 
                 var forecastDate = document.createElement("h4");
                 forecastCard.append(forecastDate);
-                forecastDate.textContent = moment.unix(res.daily[i].dt).format("D" + "/" + "MM" + "/" + "YYYY");
+                forecastDate.textContent = " (" + moment.unix(res.daily[i].dt).format("D" + "/" + "MM" + "/" + "YYYY") + " )";
                 forecastDate.setAttribute("class", "card-title");
 
                 var forecastImgDiv = document.createElement("div");
@@ -150,7 +160,7 @@ function getCityCoord (usercity, shouldCreateButton) {
             var lat = data.coord.lat;
             var city = data.name;
 
-            cityTitle.textContent = city;
+
             cityInput.value = "";
 
 
@@ -162,17 +172,16 @@ function getCityCoord (usercity, shouldCreateButton) {
             // create buttons only if a new city
             if (shouldCreateButton) {
             var listButton = document.createElement("button")
-            cityButtons.append(listButton);
+            cityButtons.appendChild(listButton);
             listButton.textContent = city;
-            console.log("New Button name : " + city);
-            listButton.setAttribute("class", "btn btn-primary col-12");
+            listButton.setAttribute("class", "btn btn-tertiary");
             cities.push(city);
             localStorage.setItem("cities", JSON.stringify(cities));
             }
 
             console.log("This is LOCAL STORAGE ARRAY : " + cities);
 
-            oneCall(lat, lon,);
+            oneCall(lat, lon, city);
     });
 };
 

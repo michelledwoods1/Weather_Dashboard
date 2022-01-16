@@ -27,4 +27,23 @@
 
 #grad {
     background-color: linear-gradient(to right, var(--primary), var(--secondary));
+    te;
+}
+
+.uvlow {
+  background-color: lightgreen;
+
+  border: none;
+}
+
+.uvmoderate {
+  background-color: orange;
+
+  border: none;;
+}
+
+.uvhigh {
+  background-color: red;
+
+  border: none;
 }
