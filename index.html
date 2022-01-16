@@ -23,24 +23,35 @@
     </header>
 
 
-    <section class="container">
-        <article class="row">
-            <!-- search section (left hand side) -->
-            <div class="col-12 col-md-4 col-lg-3 card" id="search">
+    <main class="container">
+            <!-- LEFT -->
+        <section class="row">
+            <article class="col-12 col-md-4 col-lg-3 card" id="search">
                 <h1>Search for a City:</h1>
                 <input type="text" id = "input" class="text-center text-lowercase">
-                <div id="city-buttons" class="card-body col-12">
-                    <button id="searchButton" class="btn btn-primary col-12">Search</button>
-                </div>
-            </div>
+                <button id="searchButton" class="btn btn-primary ">Search</button>
+                <div id="cityButtons"></div>
+            </article>
 
-            <!-- results section (right hand side) -->
-            <div class="col-12 col-md-8 col-lg-9" id="results">
-                <article  class="row col-12" id="current"></article>
-                <article class="row col-12 col-sm-6 col-md-4 col-lg-2" id="forecast"></article>
-            </div>
-        </article>
-    </section>
+            <article class="col-12 col-md-8 col-lg-9" id="results">
+
+                <div id="current">
+                    <div id="currentData" class="row">
+                        <div><h1 id="cityName"></h1></div>
+                        <div><h4 id="todayDate"></h4></div>
+                        <div ><img id="todayIcon" src="" alt=""></div>
+                    </div>
+                    <div class="card" id="todayCard"></div>
+                </div>
+                
+                <div><h1 class="row col-12" id="forecastTitle"></h1></div>
+               
+                <div class="row col-12 col-sm-6 col-md-4 col-lg-2" id="forecast">
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
 
 
 
