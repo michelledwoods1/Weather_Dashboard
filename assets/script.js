@@ -13,7 +13,7 @@ var todayIconDisplay = document.getElementById("todayIcon");
 var forecastTitle = document.getElementById("forecastTitle")
 var todayCard = document.getElementById("todayCard")
 
-// var usercity = cityInput.value;
+// create empty array for localStorage
 var cities = [];
 
 
@@ -22,7 +22,6 @@ var storedCities = JSON.parse(localStorage.getItem("cities"));
 if (storedCities !== null) {
     cities = storedCities;
 }
-
 cityButtons.textContent = "";
 
 for (var i = 0; i < cities.length; i++) {
@@ -32,21 +31,20 @@ for (var i = 0; i < cities.length; i++) {
         listButton.setAttribute("class", "btn btn-dark text-light my-2 col-12");
 };
 
-// return city data based on lon & lat
+// return city data based OpenWeather API
 function oneCall(lat, lon, city){
     fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}`)
         .then(function(response) {
             return response.json();
         })
         .then(function(res) {
-            console.log("OneCall api :");
-            console.log(res);
+            // console.log("OneCall API : " + res);
 
             cityTitle.textContent = city;
 
             // display current date
             todayDate.textContent = moment.unix(res.daily[0].dt).format("D" + "/" + "MM" + "/" + "YYYY");
-            console.log("this is the onecall date: " + todayDate.textContent);
+         
           
             // display current day icon
             var todayIconRef = res.current.weather[0].icon
@@ -80,8 +78,9 @@ function oneCall(lat, lon, city){
             todayUV.appendChild(todayUVbutton);
 
             var todayUVindex = parseFloat(res.current.uvi);
-            console.log("this is uv index : " + todayUVindex);
             todayUVbutton.innerHTML = todayUVindex;
+
+            // create colored buttons based on UV index
 
             if (todayUVindex >5) {
                 todayUVbutton.setAttribute("class", "uvall uvhigh");
@@ -137,14 +136,15 @@ function oneCall(lat, lon, city){
             
     })
 };
-
+// check that user input is valid
+// check if a button should be created
 function getCityCoord (usercity, shouldCreateButton) {
     todayCard.textContent = "";
     forecastResult.textContent = "";
           
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${usercity}&appid=${apiKey}`)
         .then(function (response) {
-            console.log("This is response status :" + response.status);
+            // console.log("Response status :" + response.status);
             if (!response.ok) {
                 alert("invalid city name");
                 todayCard.textContent = "";
@@ -158,8 +158,7 @@ function getCityCoord (usercity, shouldCreateButton) {
         })
  
         .then(function (data){
-            console.log("OpenWeather api : ");
-            console.log(data);
+            // console.log("OpenWeather API : " + data);
                 
             var lon = data.coord.lon;
             var lat = data.coord.lat;
@@ -177,8 +176,6 @@ function getCityCoord (usercity, shouldCreateButton) {
             localStorage.setItem("cities", JSON.stringify(cities));
             }
 
-            console.log("This is LOCAL STORAGE ARRAY : " + cities);
-
             oneCall(lat, lon, city);
     });
 };
@@ -190,7 +187,6 @@ searchButton.addEventListener("click", function(event) {
     event.preventDefault();
     
     var usercity = cityInput.value.trim();
-    console.log("This is usercity input :" + usercity);
 
     if (usercity === "") {
         return;
@@ -209,10 +205,9 @@ cityButtons.addEventListener("click", function(event) {
 
     if (element.matches("button")) {
     var usercity = element.textContent
-    console.log("This is a saved usercity :" + usercity);
     }
 
-
+// adding 'false' parameter so buttons are not duplicated
     if (usercity) {
         getCityCoord(usercity, false);
 
