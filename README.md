@@ -41,6 +41,6 @@ During the completion of this task, I learned:
 - ### Step 10 - HTML -Bootstrap styling/re-styling (needed more time)
 
 #
-[Click here to view Weather Dashboard Website](https://github.com/michelledwoods1/Weather_Dashboard/)
+[Click here to view Weather Dashboard Website](https://michelledwoods1.github.io/Weather_Dashboard/)
 #
 ![Screenshot of Webiste url](assets/images/screenshot.png)
