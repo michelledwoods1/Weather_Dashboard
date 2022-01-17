@@ -29,7 +29,7 @@ for (var i = 0; i < cities.length; i++) {
         var listButton = document.createElement("button");
         listButton.textContent = cities[i];
         cityButtons.append(listButton);
-        listButton.setAttribute("class", "btn btn-primary col-12");
+        listButton.setAttribute("class", "btn btn-dark text-light my-2 col-12");
 };
 
 // return city data based on lon & lat
@@ -75,35 +75,37 @@ function oneCall(lat, lon, city){
             todayUV.innerHTML = "UV : "
             todayCard.append(todayUV);
             var todayUVbutton = document.createElement("button");
-            todayUV.setAttribute("class", "my-2 ml-2")
+            todayUVbutton.setAttribute("class", "mx-5")
+            todayUV.setAttribute("class", "my-2 ml-2 ")
             todayUV.appendChild(todayUVbutton);
 
             var todayUVindex = parseFloat(res.current.uvi);
             console.log("this is uv index : " + todayUVindex);
             todayUVbutton.innerHTML = todayUVindex;
+
             if (todayUVindex >5) {
-                todayUVbutton.setAttribute("class", "uvhigh");
+                todayUVbutton.setAttribute("class", "uvall uvhigh");
             } else if (todayUVindex <3) {
-                todayUVbutton.setAttribute("class", "uvlow");
+                todayUVbutton.setAttribute("class", "uvall uvlow");
             } else {
-                todayUVbutton.setAttribute("class", "uvmoderate");
+                todayUVbutton.setAttribute("class", "uvall uvmoderate");
             };
 
-            // display 5 day forecast heading
-            forecastTitle.innerHTML = "5 Day Forecast:"
- 
+            
             // create forecast cards for 5 days only
             for (var i = 1; i < 6; i++) {
 
                 var forecastCard = document.createElement("div");
-                forecastCard.setAttribute("class", "card-body bg-secondary mx-1 my-1 text-white");
+                forecastCard.setAttribute("class", "card-body bg-secondary mx-1 my-1 text-white px-1 py-1 col-12 col-sm-6 col-md-4 col-lg-2");
                 forecastResult.append(forecastCard);
-
+        
 
                 var forecastDate = document.createElement("h4");
                 forecastCard.append(forecastDate);
-                forecastDate.textContent = " (" + moment.unix(res.daily[i].dt).format("D" + "/" + "MM" + "/" + "YYYY") + " )";
+                forecastDate.textContent = moment.unix(res.daily[i].dt).format("D" + "/" + "MM" + "/" + "YYYY");
                 forecastDate.setAttribute("class", "card-title");
+                forecastDate.setAttribute("style", "align-text-center");
+                forecastDate.setAttribute("style", "font-size: 10");
 
                 var forecastImgDiv = document.createElement("div");
                 forecastCard.append(forecastImgDiv);
@@ -128,6 +130,9 @@ function oneCall(lat, lon, city){
 
                 forecastHumidity.innerHTML = "Humidity : " + (res.daily[i].humidity) + " %"
 
+               // display 5 day forecast heading
+               forecastTitle.innerHTML = "5 Day Forecast:"
+ 
             }
             
     })
@@ -160,21 +165,14 @@ function getCityCoord (usercity, shouldCreateButton) {
             var lat = data.coord.lat;
             var city = data.name;
 
-
             cityInput.value = "";
-
-
-
-            console.log("this is openW date : " + moment.unix(data.dt).format("D" + "/" + "MM" + "/" + "YYYY")); 
-            console.log("Coordinates from OpenWeatherMap : ");
-            console.log("City :" + city + " " + "lat: " + lat + " " + "lon: " + lon);
 
             // create buttons only if a new city
             if (shouldCreateButton) {
             var listButton = document.createElement("button")
             cityButtons.appendChild(listButton);
             listButton.textContent = city;
-            listButton.setAttribute("class", "btn btn-tertiary");
+            listButton.setAttribute("class", "btn btn-secondary col-12");
             cities.push(city);
             localStorage.setItem("cities", JSON.stringify(cities));
             }
@@ -190,7 +188,7 @@ function getCityCoord (usercity, shouldCreateButton) {
 //event listeners
 searchButton.addEventListener("click", function(event) {
     event.preventDefault();
-
+    
     var usercity = cityInput.value.trim();
     console.log("This is usercity input :" + usercity);
 
