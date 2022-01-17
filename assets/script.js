@@ -48,7 +48,7 @@ function oneCall(lat, lon, city){
           
             // display current day icon
             var todayIconRef = res.current.weather[0].icon
-            var todayURL = `http://openweathermap.org/img/wn/${todayIconRef}.png`
+            var todayURL = `https://openweathermap.org/img/wn/${todayIconRef}.png`
             todayIconDisplay.setAttribute("src", todayURL);
             todayIconDisplay.setAttribute("alt", "current weather icon");
 
@@ -112,7 +112,7 @@ function oneCall(lat, lon, city){
                 forecastImgDiv.append(forecastImg);
 
                 var forecastIcon = (res.daily[i].weather[0].icon);
-                var forecastURL = `http://openweathermap.org/img/wn/${forecastIcon}.png`
+                var forecastURL = `https://openweathermap.org/img/wn/${forecastIcon}.png`
                 forecastImg.setAttribute("src", forecastURL);
                 forecastImg.setAttribute("alt", "forecasted weather icon");
                 
